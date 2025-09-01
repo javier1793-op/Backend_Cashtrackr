@@ -6,7 +6,7 @@ export class ExpensesController {
   
     static create = async (req: Request, res: Response) => {
      try {
-        const expense= new Expense(req.body)
+        const expense= await Expense.create(req.body)
         expense.budgetId = req.budget.id
         await expense.save()
         res.status(201).json('EL Gasto se creo correctamente')
