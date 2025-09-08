@@ -15,7 +15,7 @@ export class AuthController {
     }
 
     try {
-      const user = new User(req.body);
+      const user = await  User.create(req.body);
       user.password = await hastPassword(password);
       user.token = generateToken();
       await user.save();
@@ -26,7 +26,7 @@ export class AuthController {
         token: user.token,
       });
 
-      res.json("Cuenta creada correctamente");
+      res.status(401).json("Cuenta creada correctamente");
     } catch (error) {
       //console.log(error)
       res.status(500).json({ error: "Hubo un error" });
@@ -153,3 +153,4 @@ export class AuthController {
       res.json('El password es correctamente')
   }
 }
+
