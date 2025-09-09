@@ -9,7 +9,7 @@
     "build": "tsc",
     "start": "node ./dist/index.js",
     "test": "jest",
-    "test:coverage":"jest --coverage"
+    "test:coverage": "jest --coverage"
   },
   "author": "Javier Alejandro Ruiz Diaz -Dev",
   "license": "ISC",
@@ -34,9 +34,11 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
     "@types/nodemailer": "^6.4.17",
+    "@types/supertest": "^6.0.3",
     "jest": "^30.0.5",
     "node-mocks-http": "^1.17.2",
     "nodemon": "^3.1.10",
+    "supertest": "^7.1.4",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
