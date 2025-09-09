@@ -89,3 +89,41 @@ describe("Authentication - Create account", () => {
     expect(response.body).not.toHaveProperty("errors");
   });
 });
+
+describe("Authentication - Account confirmation with token", ()=>{
+  it('should display error if token is empty or token is not valid', async()=>{
+    const response= await request(server)
+                        .post('/api/auth/confirm-account')
+                        .send({
+                          token:'no_valide'
+                        })
+    expect(response.status).toBe(400)
+    expect(response.body).toHaveProperty('errors')
+    expect(response.body.errors).toHaveLength(1)
+    expect(response.body.errors[0].msg).toBe('token no valido')
+  })
+
+  it('should display error if token is no valid', async()=>{
+    const response= await request(server)
+                        .post('/api/auth/confirm-account')
+                        .send({
+                          token:'123456'
+                        })
+    expect(response.status).toBe(401)
+    expect(response.body).toHaveProperty('error')
+    expect(response.body.error).toBe('Token no valido')
+    expect(response.status).not.toBe(200)
+  })
+
+  it('should confirm account', async()=>{
+
+    const token= globalThis.chashtrackrConfirmToken
+    const response= await request(server)
+                        .post('/api/auth/confirm-account')
+                        .send({token })
+
+    expect(response.status).toBe(200)
+    expect(response.body).toBe('Cuenta confirmada correctamente')
+    expect(response.status).not.toBe(401)
+  })
+})
