@@ -72,7 +72,7 @@ describe('AuthController.createAccount', ()=>{
             token:'123456'
         })
         expect(AuthEmail.sendConfirmationEmail).toHaveBeenCalledTimes(1)
-        expect(res.statusCode).toBe(401)
+        expect(res.statusCode).toBe(201)
         
     })
 })
