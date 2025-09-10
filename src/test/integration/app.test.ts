@@ -245,3 +245,48 @@ describe("Authentication - login", ()=>{
     expect(checkPassword).toHaveBeenCalledWith('password','Confirm')
   })
 })
+
+describe("GET /api/budgets",()=>{
+
+  let jwt:string
+  beforeAll(()=>{
+    jest.restoreAllMocks()
+  })
+
+  beforeAll(async()=>{
+    const response=await request(server)
+              .post('/api/auth/login')
+              .send({
+                email:'javier@test.com',
+                password:'password'
+              })
+    jwt= response.body
+  })
+
+  it('should reject unauthenticated access to budgets without a jwt', async()=>{
+    const response= await request(server)
+                  .get('/api/budgets')
+
+    expect(response.status).toBe(401)
+    expect(response.body.error).toBe('No autorizado')
+  })
+
+  it('should reject unauthenticated access to budgets without a valid jwt', async()=>{
+    const response= await request(server)
+                  .get('/api/budgets')
+                  .auth('no_token',{type:'bearer'})
+
+    expect(response.status).toBe(500)
+    expect(response.body.error).toBe('Token no valido')
+  })
+
+   it('should allow authenticated access to budgets with a valid jwt', async()=>{
+    const response= await request(server)
+                  .get('/api/budgets')
+                  .auth(jwt,{type:'bearer'})
+
+    expect(response.body).toHaveLength(0)
+    expect(response.status).not.toBe(401)
+    expect(response.body.error).not.toBe('No autorizado')
+  })
+})
