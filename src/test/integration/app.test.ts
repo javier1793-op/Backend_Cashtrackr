@@ -246,21 +246,26 @@ describe("Authentication - login", ()=>{
   })
 })
 
-describe("GET /api/budgets",()=>{
-
-  let jwt:string
-  beforeAll(()=>{
-    jest.restoreAllMocks()
-  })
-
-  beforeAll(async()=>{
-    const response=await request(server)
+let jwt:string
+async function authenticateUser(){
+  const response=await request(server)
               .post('/api/auth/login')
               .send({
                 email:'javier@test.com',
                 password:'password'
               })
     jwt= response.body
+}
+
+describe("GET /api/budgets",()=>{
+
+
+  beforeAll(()=>{
+    jest.restoreAllMocks()
+  })
+
+  beforeAll(async()=>{
+    await authenticateUser()
   })
 
   it('should reject unauthenticated access to budgets without a jwt', async()=>{
@@ -288,5 +293,30 @@ describe("GET /api/budgets",()=>{
     expect(response.body).toHaveLength(0)
     expect(response.status).not.toBe(401)
     expect(response.body.error).not.toBe('No autorizado')
+  })
+})
+
+describe('POST /api/budgets',()=>{
+
+  beforeAll(async()=>{
+    await authenticateUser()
+  })
+
+  it('should reject unauthenticated psot request to budgets without a jwt', async ()=>{
+    const response= await request(server)
+                    .post('/api/budgets')
+    
+    expect(response.status).toBe(401)
+    expect(response.body.error).toBe('No autorizado')
+  })
+
+   it('should display validation when the form is submitted with invalid data', async ()=>{
+    const response= await request(server)
+                    .post('/api/budgets')
+                    .auth(jwt,{type:'bearer'})
+                    .send({})
+    
+    expect(response.status).toBe(400)
+    expect(response.body.errors).toHaveLength(4)
   })
 })
