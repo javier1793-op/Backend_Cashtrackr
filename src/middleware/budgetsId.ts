@@ -15,7 +15,8 @@ export const budgetsId = async(req: Request, res: Response, next: NextFunction) 
  
     await param('BudgetId')
          .isInt().withMessage('Id no valido')
-         .custom(value => value > 0).withMessage('Id no valido').run(req)
+         .custom(value => value > 0).withMessage('Id no valido')
+         .run(req)
  
     let errors = validationResult(req)
     if (!errors.isEmpty()) {
